@@ -1,0 +1,45 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: apache-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: apache
+  template:
+    metadata:
+      labels:
+        app: apache
+    spec:
+      containers:
+        - name: apache
+          image: "{{ .Values.apache.image }}"
+          ports:
+            - containerPort: 80
+          volumeMounts:
+            - name: apache-volume
+              mountPath: "{{ .Values.site.directory }}"
+        - name: php
+          image: "{{ .Values.php.image }}"
+          ports:
+            - containerPort: 80
+          volumeMounts:
+            - name: apache-volume
+              mountPath: "{{ .Values.site.directory }}"
+        - name: mysql
+          image: "{{ .Values.mysql.image }}"
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              value: "{{ .Values.mysql.rootPassword }}"
+            - name: MYSQL_DATABASE
+              value: "{{ .Values.mysql.dbName }}"
+            - name: MYSQL_USER
+              value: "{{ .Values.mysql.user }}"
+            - name: MYSQL_PASSWORD
+              value: "{{ .Values.mysql.password }}"
+      volumes:
+        - name: apache-volume
+          persistentVolumeClaim:
+            claimName: apache-pvc

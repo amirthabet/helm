@@ -1,0 +1,22 @@
+---
+# Définition de la version de l'image Docker pour Apache, PHP, et MySQL
+apache:
+  image: "httpd:latest"
+  port: 80
+
+php:
+  image: "php:7.4-apache"
+  port: 80
+
+mysql:
+  image: "mysql:5.7"
+  rootPassword: "rootpassword"
+  dbName: "lampdb"
+  user: "lampuser"
+  password: "password"
+
+# Configuration du site Web
+site:
+  name: "mon-site-web"
+  directory: "/var/www/html"
+  indexFile: "index.php"
